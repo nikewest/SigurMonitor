@@ -41,9 +41,8 @@ public class SigurClient{
 					//		break;
 					//	}
 					} catch (IOException ioe) {
-						logger.error(ioe.getClass());
 						logger.error(ioe.toString());
-						logger.error(ioe.getMessage());
+						//logger.error(ioe.getMessage());
 						if (!connectToServer()) {
 							// can't connect to server
 							isRunning.set(false);

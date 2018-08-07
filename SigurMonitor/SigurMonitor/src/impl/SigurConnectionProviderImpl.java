@@ -17,7 +17,7 @@ import sigur.SigurTextProtocol;
 
 public class SigurConnectionProviderImpl implements SigurConnectionProvider {
 
-	private static final Logger logger = LogManager.getLogger(SigurConnectionProviderImpl.class);
+	private static final Logger logger = LogManager.getLogger(SigurConnectionProviderImpl.class.getName());
 	
 	private Socket socket;
 	private BufferedReader reader;
