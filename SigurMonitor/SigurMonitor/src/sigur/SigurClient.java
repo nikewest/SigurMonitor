@@ -1,7 +1,8 @@
 package sigur;
 
 import java.io.IOException;
-import java.net.SocketTimeoutException;
+//import java.net.SocketException;
+//import java.net.SocketTimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.logging.log4j.LogManager;
@@ -26,13 +27,22 @@ public class SigurClient{
 				while (isRunning.get()) {
 					try {
 						response = connectionProvider.readMessageFromServer();
-					} catch (SocketTimeoutException stoe) {
-						// read or accept timeout
-						// do nothing
-						logger.error(stoe.getMessage());
-						response = null;						
+					//} catch (SocketTimeoutException stoe) {
+					//	logger.error(stoe.getMessage());
+					//	response = null;
+					//} catch (SocketException se) {
+					//	// we lost connection
+					//	logger.error(se.getClass());
+					//	logger.error(se.toString());
+					//	logger.error(se.getMessage());
+					//	if (!connectToServer()) {
+					//		// can't connect to server
+					//		isRunning.set(false);
+					//		break;
+					//	}
 					} catch (IOException ioe) {
-						// we lost connection
+						logger.error(ioe.getClass());
+						logger.error(ioe.toString());
 						logger.error(ioe.getMessage());
 						if (!connectToServer()) {
 							// can't connect to server
@@ -40,7 +50,7 @@ public class SigurClient{
 							break;
 						}
 					}
-					if (response != null) {
+					if (response != null) {						
 						eventHandler.showMessage(new SigurEvent(response));
 					}
 				}

@@ -7,7 +7,6 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.net.SocketTimeoutException;
 import java.util.Properties;
 
 import org.apache.logging.log4j.LogManager;
@@ -18,7 +17,7 @@ import sigur.SigurTextProtocol;
 
 public class SigurConnectionProviderImpl implements SigurConnectionProvider {
 
-	private static final Logger logger = LogManager.getLogger(SigurConnectionProviderImpl.class.getName());
+	private static final Logger logger = LogManager.getLogger(SigurConnectionProviderImpl.class);
 	
 	private Socket socket;
 	private BufferedReader reader;
@@ -49,9 +48,9 @@ public class SigurConnectionProviderImpl implements SigurConnectionProvider {
 		while (connectionAttempts > 0 || connectionAttempts == 0) {
 			try {
 				InetAddress inetAddress = InetAddress.getByName(serverAddress);
-				if (inetAddress.isReachable(connectionTimeOut * 1000)) {
+				if (inetAddress.isReachable(10 * 1000)) {
 					socket = new Socket(InetAddress.getByName(serverAddress), serverPort);
-					socket.setSoTimeout(10 * 1000);// server message waiting timeout
+					socket.setSoTimeout(connectionTimeOut * 1000);// server message waiting timeout
 					reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 					writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
 					logger.info("connection success");
@@ -110,16 +109,14 @@ public class SigurConnectionProviderImpl implements SigurConnectionProvider {
 	}
 	
 	@Override
-	public String readMessageFromServer() throws SocketTimeoutException, IOException {
+	public String readMessageFromServer() throws IOException {
 		String message = null;
 		try {
 			message = reader.readLine();			
-		} catch (SocketTimeoutException stoe) {							
-			throw stoe;
 		} catch (IOException e) {
 			throw e;
 		} 
-		logger.info(message);
+		logger.info("Message from server: " + message);
 		return message;		
 	}
 

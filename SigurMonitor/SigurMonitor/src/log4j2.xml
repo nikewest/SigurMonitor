@@ -10,10 +10,22 @@
 			</Policies>
 			<DefaultRolloverStrategy max="7"/> 
 		</RollingFile>
+		<RollingFile name="ErrorLogRollingFile" fileName="logs/erros.log" filePattern="logs/err_%d{yyyy-MM-dd-hh}.log.zip">
+			<PatternLayout>
+				<Pattern>%d %p [%t] [%c] : %m%n</Pattern>
+			</PatternLayout>
+			<Policies>
+				<TimeBasedTriggeringPolicy interval="24" modulate="true"/>
+			</Policies>
+			<DefaultRolloverStrategy max="7"/> 
+		</RollingFile>		
 	</Appenders>
 	<Loggers>
 		<Root level = "DEBUG">
 			<AppenderRef ref="RollingFile" />
 		</Root>
+		<Logger name = "impl.SigurConnectionProviderImpl" level = "ERROR">
+			<AppendRef ref="ErrorLogRollingFile"/>
+		</Logger>		
 	</Loggers>
 </Configuration>
