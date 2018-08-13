@@ -17,6 +17,7 @@ public class SigurEventHandlerImpl implements SigurEventHandler {
 	private MainPanel mainPanel;
 	private HashSet<String> allowedSenders = new HashSet<String>();
 	private int allowedDirection;
+	Properties properties;
 	
 	private SigurEventHandlerImpl() {				
 	}
@@ -33,6 +34,8 @@ public class SigurEventHandlerImpl implements SigurEventHandler {
 	@Override
 	public boolean initialize(Properties eventHandlerProperties) {
 		
+		properties = eventHandlerProperties;
+		
 		String sendersSettings = eventHandlerProperties.getProperty(SigurSettingsManagerImpl.ALLOWED_SENDERS_RPOPERTY_KEY);		
 		for(String senderString:sendersSettings.split(";")) {
 			allowedSenders.add(senderString);
@@ -40,7 +43,7 @@ public class SigurEventHandlerImpl implements SigurEventHandler {
 		allowedDirection = Integer.parseInt(eventHandlerProperties.getProperty(SigurSettingsManagerImpl.ALLOWED_DIRECTION_PROPERTY_KEY));
 		
 		jframe = new JFrame();
-		mainPanel = new MainPanel();			
+		mainPanel = new MainPanel(eventHandlerProperties.getProperty(SigurSettingsManagerImpl.MAIN_SCREEN_TEXT));			
 		jframe.setContentPane(mainPanel);		
 		jframe.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -64,22 +67,26 @@ public class SigurEventHandlerImpl implements SigurEventHandler {
 		if (sigurEvent.getEventType() != null) {
 			switch (sigurEvent.getEventType()) {
 			case SUCCESS_ENTER:
-
-				String visitorName = SigurClient.getInstance().getSigurDAO().getVisitorName(sigurEvent.getObjectID());				
-				
-				result = "<html><body style='text-align: center'>Добро пожаловать! " + visitorName;
-				break;
+				String visitorName = SigurClient.getInstance().getSigurDAO().getVisitorName(sigurEvent.getObjectID());
+				//result = "<html><body style='text-align: center'>Добро пожаловать! " + visitorName;
+				result = properties.getProperty(SigurSettingsManagerImpl.SUCCESS_ENTER_TEXT);
+				result = result.replaceAll("\\[name\\]", visitorName);
+				break;				
 			case FAIL_FACE_SCAN:
-				result = "<html><body style='text-align: center'>Лицо не опознано.<br><br>Пожалуйста, посмотрите в камеру после ввода пин кода!";
+				//result = "<html><body style='text-align: center'>Лицо не опознано.<br><br>Пожалуйста, посмотрите в камеру после ввода пин кода!";
+				result = properties.getProperty(SigurSettingsManagerImpl.FAIL_FACE_SCAN_TEXT);
 				break;
 			case FAIL_WRONG_CODE:
-				result = "<html><body style='text-align: center'>Неверный пин код.<br><br>Попробуйте еще раз или обратитесь в отдел продаж.";
+				//result = "<html><body style='text-align: center'>Неверный пин код.<br><br>Попробуйте еще раз или обратитесь в отдел продаж.";
+				result = properties.getProperty(SigurSettingsManagerImpl.FAIL_WRONG_CODE_TEXT);
 				break;
 			case FAIL_EXPIRED:
-				result = "<html><body style='text-align: center'>Срок действия абонемента истек.<br><br>Пожалуйста, обратитесь в отдел продаж.";
+				//result = "<html><body style='text-align: center'>Срок действия абонемента истек.<br><br>Пожалуйста, обратитесь в отдел продаж.";
+				result = properties.getProperty(SigurSettingsManagerImpl.FAIL_EXPIRED_TEXT);
 				break;
 			case FAIL_TIME_LIMIT:
-				result = "<html><body style='text-align: center'>У Вас нет допуска в это время.<br><br>Пожалуйста, обратитесь в отдел продаж.";
+				//result = "<html><body style='text-align: center'>У Вас нет допуска в это время.<br><br>Пожалуйста, обратитесь в отдел продаж.";
+				result = properties.getProperty(SigurSettingsManagerImpl.FAIL_TIME_LIMIT_TEXT);
 				break;
 			default:
 			}

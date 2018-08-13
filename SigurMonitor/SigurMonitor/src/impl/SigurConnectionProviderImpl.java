@@ -45,7 +45,9 @@ public class SigurConnectionProviderImpl implements SigurConnectionProvider {
 		int connectionTimeOut = Integer.parseInt(connectionProperties.getProperty(SigurSettingsManagerImpl.CONNECTION_TIMEOUT_PROPERTY_KEY));
 		int connectionAttempts = Integer.parseInt(connectionProperties.getProperty(SigurSettingsManagerImpl.CONNECTION_ATTEMPTS_PROPERTY_KEY));
 				
-		while (connectionAttempts > 0 || connectionAttempts == 0) {
+		boolean infinitAttempts = connectionAttempts == 0;
+		
+		while (connectionAttempts > 0 || infinitAttempts) {
 			try {
 				InetAddress inetAddress = InetAddress.getByName(serverAddress);
 				if (inetAddress.isReachable(10 * 1000)) {
@@ -60,10 +62,8 @@ public class SigurConnectionProviderImpl implements SigurConnectionProvider {
 				//
 				logger.error(e.getMessage());
 			}
-			if (connectionAttempts > 1) {
+			if(!infinitAttempts) {
 				connectionAttempts--;
-			} else {
-				break;
 			}
 		}
 

@@ -10,9 +10,10 @@ import java.awt.Font;
 public class MainPanel extends JPanel {
 
 	private static final long serialVersionUID = 1L;
-		
+	
 	private volatile Boolean wasAction = true;
 	private volatile int waiterTimeout = 0;
+	private final String mainScreenText; 
 	
 	public void setTimer(int value) {
 		waiterTimeout = value;
@@ -47,7 +48,8 @@ public class MainPanel extends JPanel {
 			synchronized (MainPanel.this.wasAction) {
 				if(MainPanel.this.wasAction) {
 					setWasAction(false);
-					MainPanel.this.writeToLabel("<html><body style='text-align: center'>1. Введите персональный код из СМС <br><br>2. Нажмите # <br><br>3. Посмотрите в камеру!");			
+					//MainPanel.this.writeToLabel("<html><body style='text-align: center'>1. Введите персональный код из СМС <br><br>2. Нажмите # <br><br>3. Посмотрите в камеру!");
+					MainPanel.this.writeToLabel(mainScreenText);
 				}
 				setTimer(3);
 			}			
@@ -59,7 +61,7 @@ public class MainPanel extends JPanel {
 	/**
 	 * Create the panel.
 	 */
-	public MainPanel() {
+	public MainPanel(String mainScreenText) {
 		
 		setPreferredSize(new Dimension(650, 480));
 		setLayout(new BorderLayout(0, 0));
@@ -71,6 +73,8 @@ public class MainPanel extends JPanel {
 		messageLabel.setFocusable(false);
 		add(messageLabel, BorderLayout.CENTER);
 
+		this.mainScreenText = mainScreenText;
+		
 		new EventWaiter();		
 	}
 	
