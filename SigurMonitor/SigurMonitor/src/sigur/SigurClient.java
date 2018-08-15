@@ -105,12 +105,9 @@ public class SigurClient{
 	}
 		
 	private boolean connectToServer() {
-		
-		if(connectionProvider.connectToServer(settingsManager.getConnectionSettings())) {
-			if(connectionProvider.loginToServer(settingsManager.getConnectionSettings())) {
-				return true;
-			}
-		};		
+		if(connectionProvider.connectToServer(settingsManager.getConnectionSettings())) {			
+			return true;			
+		};
 		return false;
 		
 	}

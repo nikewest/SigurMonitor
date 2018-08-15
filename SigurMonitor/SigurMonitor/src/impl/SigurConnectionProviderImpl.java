@@ -38,8 +38,6 @@ public class SigurConnectionProviderImpl implements SigurConnectionProvider {
 	@Override
 	public boolean connectToServer(Properties connectionProperties) {
 		
-		logger.info("connecting to server...");
-		
 		String serverAddress = connectionProperties.getProperty(SigurSettingsManagerImpl.SERVER_ADDRESS_PROPERTY_KEY);
 		int serverPort = Integer.parseInt(connectionProperties.getProperty(SigurSettingsManagerImpl.SERVER_PORT_PROPERTY_KEY));
 		int connectionTimeOut = Integer.parseInt(connectionProperties.getProperty(SigurSettingsManagerImpl.CONNECTION_TIMEOUT_PROPERTY_KEY));
@@ -49,6 +47,9 @@ public class SigurConnectionProviderImpl implements SigurConnectionProvider {
 		
 		while (connectionAttempts > 0 || infinitAttempts) {
 			try {
+				
+				logger.info(String.format("connecting to server... (attempts: %d)", connectionAttempts));
+				
 				InetAddress inetAddress = InetAddress.getByName(serverAddress);
 				if (inetAddress.isReachable(10 * 1000)) {
 					socket = new Socket(InetAddress.getByName(serverAddress), serverPort);
@@ -56,8 +57,10 @@ public class SigurConnectionProviderImpl implements SigurConnectionProvider {
 					reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 					writer = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
 					logger.info("connection success");
-					return true;
-				}
+					if(loginToServer(connectionProperties)) {
+						return true;
+					}
+				}				
 			} catch (Exception e) {
 				//
 				logger.error(e.getMessage());
@@ -69,9 +72,8 @@ public class SigurConnectionProviderImpl implements SigurConnectionProvider {
 
 		logger.info("connection failed");
 		return false;
-	}
+	}	
 	
-	@Override
 	public boolean loginToServer(Properties connectionProperties) {		
 		String answer;
 		

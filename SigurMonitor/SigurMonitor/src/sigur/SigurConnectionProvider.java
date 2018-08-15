@@ -7,7 +7,6 @@ import java.util.Properties;
 public interface SigurConnectionProvider {
 
 	boolean connectToServer(Properties connectionProperties);	
-	String readMessageFromServer() throws SocketTimeoutException, IOException;
-	boolean loginToServer(Properties connectionProperties);	
+	String readMessageFromServer() throws SocketTimeoutException, IOException;		
 	void freeResources();
 }

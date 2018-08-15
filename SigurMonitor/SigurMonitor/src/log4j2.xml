@@ -6,7 +6,7 @@
 				<Pattern>%d %p [%t] [%c] : %m%n</Pattern>
 			</PatternLayout>
 			<Policies>
-				<TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+				<TimeBasedTriggeringPolicy interval="12" modulate="true"/>
 			</Policies>
 			<DefaultRolloverStrategy max="7"/> 
 		</RollingFile>
