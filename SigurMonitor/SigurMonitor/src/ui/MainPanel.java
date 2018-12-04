@@ -1,6 +1,7 @@
 package ui;
 
 import javax.swing.JPanel;
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import java.awt.BorderLayout;
@@ -50,6 +51,7 @@ public class MainPanel extends JPanel {
 					setWasAction(false);
 					//MainPanel.this.writeToLabel("<html><body style='text-align: center'>1. Введите персональный код из СМС <br><br>2. Нажмите # <br><br>3. Посмотрите в камеру!");
 					MainPanel.this.writeToLabel(mainScreenText);
+					MainPanel.this.showPhoto(null);
 				}
 				setTimer(3);
 			}			
@@ -57,6 +59,7 @@ public class MainPanel extends JPanel {
 	}
 
 	JLabel messageLabel;
+	JLabel photoLabel;
 
 	/**
 	 * Create the panel.
@@ -67,20 +70,25 @@ public class MainPanel extends JPanel {
 		setLayout(new BorderLayout(0, 0));
 
 		messageLabel = new JLabel();
+		messageLabel.setFocusable(false);
 		messageLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		messageLabel.setHorizontalTextPosition(SwingConstants.CENTER);
 		messageLabel.setFont(new Font("Dialog", Font.BOLD, 48));
-		messageLabel.setFocusable(false);
 		add(messageLabel, BorderLayout.CENTER);
 
 		this.mainScreenText = mainScreenText;
 		
+		photoLabel = new JLabel();
+		photoLabel.setFocusable(false);
+		add(photoLabel, BorderLayout.WEST);
+		
 		new EventWaiter();		
 	}
 	
-	public void showMessage(String message) {
+	public void showMessage(String message, ImageIcon photoImageIcon) {
 		synchronized (wasAction) {
-			setTimer(3);		
+			setTimer(3);
+			showPhoto(photoImageIcon);
 			writeToLabel(message);
 			setWasAction(true);
 		}		
@@ -88,5 +96,9 @@ public class MainPanel extends JPanel {
 	
 	public synchronized void writeToLabel(String message) {
 		messageLabel.setText(message);
+	}
+	
+	public synchronized void showPhoto(ImageIcon photoImageIcon) {
+		photoLabel.setIcon(photoImageIcon);
 	}
 }

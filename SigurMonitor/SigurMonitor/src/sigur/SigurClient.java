@@ -17,7 +17,7 @@ public class SigurClient{
 	private class SigurServerListenerThread extends Thread {
 		@Override
 		public void run() {
-			
+						
 			if(!dao.getVisitorsFromServer(settingsManager.getSyncSettings())) {
 				stopClient();
 			}						

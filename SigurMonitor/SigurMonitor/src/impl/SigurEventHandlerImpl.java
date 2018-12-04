@@ -4,6 +4,7 @@ import java.awt.event.WindowEvent;
 import java.util.HashSet;
 import java.util.Properties;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 
 import sigur.SigurClient;
@@ -64,6 +65,7 @@ public class SigurEventHandlerImpl implements SigurEventHandler {
 		}
 		
 		String result = null;
+		ImageIcon photoImageIcon = null;
 		if (sigurEvent.getEventType() != null) {
 			switch (sigurEvent.getEventType()) {
 			case SUCCESS_ENTER:
@@ -71,6 +73,7 @@ public class SigurEventHandlerImpl implements SigurEventHandler {
 				//result = "<html><body style='text-align: center'>Добро пожаловать! " + visitorName;
 				result = properties.getProperty(SigurSettingsManagerImpl.SUCCESS_ENTER_TEXT);
 				result = result.replaceAll("\\[name\\]", visitorName);
+				photoImageIcon = SigurClient.getInstance().getSigurDAO().getVisitorPhoto(sigurEvent.getObjectID()); 
 				break;				
 			case FAIL_FACE_SCAN:
 				//result = "<html><body style='text-align: center'>Лицо не опознано.<br><br>Пожалуйста, посмотрите в камеру после ввода пин кода!";
@@ -92,7 +95,7 @@ public class SigurEventHandlerImpl implements SigurEventHandler {
 			}
 		}
 		if(result!=null) {
-			mainPanel.showMessage(result);
+			mainPanel.showMessage(result, photoImageIcon);
 		};		
 	}
 
