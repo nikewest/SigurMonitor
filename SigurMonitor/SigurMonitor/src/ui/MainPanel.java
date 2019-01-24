@@ -5,11 +5,14 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 
 public class MainPanel extends JPanel {
 
+	private static final int MESSAGE_TIMEOUT = 3;
+	
 	private static final long serialVersionUID = 1L;
 	
 	private volatile Boolean wasAction = true;
@@ -52,8 +55,9 @@ public class MainPanel extends JPanel {
 					//MainPanel.this.writeToLabel("<html><body style='text-align: center'>1. Введите персональный код из СМС <br><br>2. Нажмите # <br><br>3. Посмотрите в камеру!");
 					MainPanel.this.writeToLabel(mainScreenText);
 					MainPanel.this.showPhoto(null);
+					MainPanel.this.setBackground(new Color(238, 238, 238));
 				}
-				setTimer(3);
+				setTimer(MESSAGE_TIMEOUT);
 			}			
 		}
 	}
@@ -85,11 +89,15 @@ public class MainPanel extends JPanel {
 		new EventWaiter();		
 	}
 	
-	public void showMessage(String message, ImageIcon photoImageIcon) {
+	public void showMessage(String message, ImageIcon photoImageIcon, Color backgroundColor, int messageTimeout) {
 		synchronized (wasAction) {
-			setTimer(3);
+			//setTimer(MESSAGE_TIMEOUT);
+			setTimer(messageTimeout);
 			showPhoto(photoImageIcon);
 			writeToLabel(message);
+			if(backgroundColor!=null) {
+				this.setBackground(backgroundColor);
+			}
 			setWasAction(true);
 		}		
 	}

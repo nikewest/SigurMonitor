@@ -35,6 +35,12 @@ public class SigurDAOImpl implements SigurDAO{
             e.printStackTrace();
             logger.error(e.getMessage());
         }
+		if(!(new File("photo").exists())) {
+			new File("photo").mkdir();
+		}
+		if(!(new File("audio").exists())) {
+			new File("audio").mkdir();
+		}		
 	}
 	
 	public static synchronized SigurDAOImpl getInstance() {
@@ -135,9 +141,9 @@ public class SigurDAOImpl implements SigurDAO{
 			if (!objectsToLoadPhoto.isEmpty()) {				
 				Blob photoBlob;
 				FileOutputStream fos;
-				if(!(new File("photo").exists())) {
+				/*if(!(new File("photo").exists())) {
 					new File("photo").mkdir();
-				}				
+				}*/				
 				rs = stmt.executeQuery("SELECT ID, PREVIEW_RASTER FROM PHOTO WHERE ID IN ("
 						+ String.join(",", objectsToLoadPhoto) + ")");
 				while (rs.next()) {

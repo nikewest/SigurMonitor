@@ -21,7 +21,14 @@ public class SigurSettingsManagerImpl implements SigurSettingsManager{
 	public static final String FAIL_WRONG_CODE_TEXT = "failWrongCodeText";
 	public static final String FAIL_EXPIRED_TEXT = "failExpiredText";
 	public static final String FAIL_TIME_LIMIT_TEXT = "failTimeLimitText";
-		
+
+	//public static final String MAIN_SCREEN_AUDIO = "mainScreenAudio.wav";
+	public static final String SUCCESS_ENTER_AUDIO = "successEnterAudio.wav";
+	public static final String FAIL_FACE_SCAN_AUDIO = "failFaceScanAudio.wav";
+	public static final String FAIL_WRONG_CODE_AUDIO = "failWrongCodeAudio.wav";
+	public static final String FAIL_EXPIRED_AUDIO = "failExpiredAudio.wav";
+	public static final String FAIL_TIME_LIMIT_AUDIO = "failTimeLimitAudio.wav";
+	
 	public static final String CONNECTION_ATTEMPTS_PROPERTY_KEY = "connectionAttempts";
 	public static final String CONNECTION_TIMEOUT_PROPERTY_KEY = "connectionTimeout";
 	public static final String SERVER_PORT_PROPERTY_KEY = "serverPort";
@@ -31,6 +38,9 @@ public class SigurSettingsManagerImpl implements SigurSettingsManager{
 	public static final String ALLOWED_SENDERS_RPOPERTY_KEY = "allowedSenders";	
 	public static final String SIGUR_USER_PROPERTY_KEY = "sigurUser";	
 	public static final String SIGUR_PWD_PROPERTY_KEY = "sigurPwd";
+	
+	public static final String SUCCESSSCREEN_DURATION = "successcreenDuration";
+	public static final String FAILSCREEN_DURATION = "failscreenDuration";
 	
 	private SigurSettingsManagerImpl(){
 		
@@ -111,6 +121,10 @@ public class SigurSettingsManagerImpl implements SigurSettingsManager{
 		eventHandlerProperties.setProperty(SigurSettingsManagerImpl.FAIL_WRONG_CODE_TEXT, properties.getProperty(SigurSettingsManagerImpl.FAIL_WRONG_CODE_TEXT, ""));
 		eventHandlerProperties.setProperty(SigurSettingsManagerImpl.FAIL_EXPIRED_TEXT, properties.getProperty(SigurSettingsManagerImpl.FAIL_EXPIRED_TEXT, ""));
 		eventHandlerProperties.setProperty(SigurSettingsManagerImpl.FAIL_TIME_LIMIT_TEXT, properties.getProperty(SigurSettingsManagerImpl.FAIL_TIME_LIMIT_TEXT, ""));
+		
+		eventHandlerProperties.setProperty(SigurSettingsManagerImpl.SUCCESSSCREEN_DURATION, properties.getProperty(SigurSettingsManagerImpl.SUCCESSSCREEN_DURATION, "3"));
+		eventHandlerProperties.setProperty(SigurSettingsManagerImpl.FAILSCREEN_DURATION, properties.getProperty(SigurSettingsManagerImpl.FAILSCREEN_DURATION, "3"));
+		
 		return eventHandlerProperties;
 	}
 
