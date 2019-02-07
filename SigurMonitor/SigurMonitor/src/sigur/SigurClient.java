@@ -10,6 +10,8 @@ public class SigurClient{
 	
 	private static final Logger logger = LogManager.getLogger(SigurClient.class.getName());
 
+	private static final String HEAP_LOG_MSG = "Heap: %d / %d / %d";
+	
 	private SigurServerListenerThread workerThread;
 	
 	long heapSize;
@@ -18,14 +20,7 @@ public class SigurClient{
 	
 	private class SigurServerListenerThread extends Thread {
 		@Override
-		public void run() {
-					
-			heapSize = Runtime.getRuntime().totalMemory();
-			heapMaxSize = Runtime.getRuntime().maxMemory();
-			heapFreeSize = Runtime.getRuntime().freeMemory();
-			logger.info(String.format("Heap: %d / %d / %d", heapSize, heapMaxSize, heapFreeSize));
-			logger.info("test");
-			
+		public void run() {			
 			if(!dao.getVisitorsFromServer(settingsManager.getSyncSettings())) {
 				stopClient();
 			}						
@@ -39,18 +34,17 @@ public class SigurClient{
 						
 						logger.error(ioe.toString());
 						
-						//check heap
-						heapSize = Runtime.getRuntime().totalMemory();
-						heapMaxSize = Runtime.getRuntime().maxMemory();
-						heapFreeSize = Runtime.getRuntime().freeMemory();
-						
-						logger.info(String.format("Heap: %d / %d / %d", heapSize, heapMaxSize, heapFreeSize));						
-						
 						if (!connectToServer()) {
 							// can't connect to server
 							isRunning.set(false);
 							break;
 						}
+						
+						//check heap
+						heapSize = Math.round(Runtime.getRuntime().totalMemory() / Math.pow(2, 20));
+						heapMaxSize = Math.round(Runtime.getRuntime().maxMemory() / Math.pow(2, 20));
+						heapFreeSize = Math.round(Runtime.getRuntime().freeMemory() / Math.pow(2, 20));
+						logger.error(String.format(HEAP_LOG_MSG, heapSize, heapMaxSize, heapFreeSize));
 					}
 					if (response != null) {						
 						eventHandler.showMessage(new SigurEvent(response));
