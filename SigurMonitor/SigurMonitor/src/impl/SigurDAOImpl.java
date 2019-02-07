@@ -140,10 +140,7 @@ public class SigurDAOImpl implements SigurDAO{
             
 			if (!objectsToLoadPhoto.isEmpty()) {				
 				Blob photoBlob;
-				FileOutputStream fos;
-				/*if(!(new File("photo").exists())) {
-					new File("photo").mkdir();
-				}*/				
+				FileOutputStream fos;								
 				rs = stmt.executeQuery("SELECT ID, PREVIEW_RASTER FROM PHOTO WHERE ID IN ("
 						+ String.join(",", objectsToLoadPhoto) + ")");
 				while (rs.next()) {
@@ -215,8 +212,7 @@ public class SigurDAOImpl implements SigurDAO{
 				} catch (SQLException e) {
 				}
         	}
-        }	
-		
+        }
 		return true;
 	}
 

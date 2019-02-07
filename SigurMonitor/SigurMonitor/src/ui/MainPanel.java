@@ -4,61 +4,48 @@ import javax.swing.JPanel;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 
 public class MainPanel extends JPanel {
-
-	private static final int MESSAGE_TIMEOUT = 3;
+	
+	private static final Logger logger = LogManager.getLogger(MainPanel.class.getName());
 	
 	private static final long serialVersionUID = 1L;
 	
-	private volatile Boolean wasAction = true;
-	private volatile int waiterTimeout = 0;
-	private final String mainScreenText; 
+	private final String mainScreenText;
 	
-	public void setTimer(int value) {
-		waiterTimeout = value;
-	}
-	
-	public void setWasAction(boolean wasAction) {
-		this.wasAction = wasAction;
-	}
+	private EventWaiter eventWaiter; 
 	
 	private class EventWaiter extends Thread {
 
-		public EventWaiter() {
+		private int messageTimeout;
+		
+		public EventWaiter(int messageTimeout) {
+			this.messageTimeout = messageTimeout; 
 			start();
 		}
 
 		@Override
 		public void run() {
-			while (true) {
-				if (MainPanel.this.waiterTimeout>0) {
-					try {
-						sleep(1000);
-						MainPanel.this.waiterTimeout--;						
-					} catch (InterruptedException e) {
-					}
-				} else {
-					doWakeUpStuff();					
-				}				
-			}
+			try {
+				sleep(messageTimeout*1000);
+				doWakeUpStuff();
+			} catch (InterruptedException e) {
+				logger.error(e.getMessage());
+			}		
 		}
 		
 		public void doWakeUpStuff() {
-			synchronized (MainPanel.this.wasAction) {
-				if(MainPanel.this.wasAction) {
-					setWasAction(false);
-					//MainPanel.this.writeToLabel("<html><body style='text-align: center'>1. Введите персональный код из СМС <br><br>2. Нажмите # <br><br>3. Посмотрите в камеру!");
-					MainPanel.this.writeToLabel(mainScreenText);
-					MainPanel.this.showPhoto(null);
-					MainPanel.this.setBackground(new Color(238, 238, 238));
-				}
-				setTimer(MESSAGE_TIMEOUT);
-			}			
+			MainPanel.this.writeToLabel(mainScreenText);
+			MainPanel.this.showPhoto(null);
+			MainPanel.this.setBackground(new Color(238, 238, 238));
 		}
 	}
 
@@ -86,20 +73,27 @@ public class MainPanel extends JPanel {
 		photoLabel.setFocusable(false);
 		add(photoLabel, BorderLayout.WEST);
 		
-		new EventWaiter();		
+		//new EventWaiter();
+		eventWaiter = new EventWaiter(0);
 	}
 	
 	public void showMessage(String message, ImageIcon photoImageIcon, Color backgroundColor, int messageTimeout) {
-		synchronized (wasAction) {
-			//setTimer(MESSAGE_TIMEOUT);
-			setTimer(messageTimeout);
-			showPhoto(photoImageIcon);
-			writeToLabel(message);
-			if(backgroundColor!=null) {
-				this.setBackground(backgroundColor);
-			}
-			setWasAction(true);
-		}		
+		
+		showPhoto(photoImageIcon);
+		writeToLabel(message);
+		if (backgroundColor != null) {
+			this.setBackground(backgroundColor);
+		}
+
+		try {
+			eventWaiter.interrupt();
+			eventWaiter.join();
+		} catch (InterruptedException e) {
+			logger.error(e.getMessage());
+		}
+
+		eventWaiter = new EventWaiter(messageTimeout);
+		
 	}
 	
 	public synchronized void writeToLabel(String message) {
